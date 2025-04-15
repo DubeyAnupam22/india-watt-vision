@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import DataUpload from "./pages/DataUpload";
 import Reports from "./pages/Reports";
+import CityReport from "./pages/CityReport";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/data-upload" element={<DataUpload />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/city/:id" element={<CityReport />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

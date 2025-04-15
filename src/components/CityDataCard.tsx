@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CityWasteData, calculateEnergyPotential, convertCompositionToArray } from "@/lib/calculation";
 import { useNavigate } from "react-router-dom";
-import { File, Trash, Pencil, ZapIcon } from "lucide-react";
+import { File, Trash, Pencil, ZapIcon, Users, Banknote, Clock } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useWasteData } from "@/lib/calculation";
 import { toast } from "@/components/ui/use-toast";
@@ -36,21 +36,27 @@ const CityDataCard: React.FC<CityDataCardProps> = ({
   };
   
   const handleViewDetails = () => {
-    navigate(`/dashboard?city=${city.id}`);
+    navigate(`/city/${city.id}`);
   };
 
   // Convert composition to array format for the chart
   const compositionArray = convertCompositionToArray(city);
 
+  const roi = energyPotential.paybackPeriodYears;
+  const roiClass = roi <= 3 ? "text-green-600" : roi <= 5 ? "text-amber-600" : "text-red-500";
+
   return (
-    <Card className="overflow-hidden hover:shadow-md transition-shadow">
-      <CardHeader className="bg-gradient-energy text-white pb-2">
+    <Card className="overflow-hidden hover:shadow-lg transition-all border border-gray-200">
+      <CardHeader className="bg-gradient-to-r from-emerald-600 to-green-700 text-white pb-3">
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-xl">{city.name}</CardTitle>
-            <CardDescription className="text-white/90">
-              Population: {city.population.toLocaleString()} | Year: {city.year}
-            </CardDescription>
+            <CardTitle className="text-xl font-bold">{city.name}</CardTitle>
+            <div className="flex items-center mt-1 text-white/90">
+              <Users className="h-3.5 w-3.5 mr-1" />
+              <CardDescription className="text-white/90 text-sm">
+                {city.population.toLocaleString()} | Year: {city.year}
+              </CardDescription>
+            </div>
           </div>
           
           {showActions && canEditData() && (
@@ -77,40 +83,40 @@ const CityDataCard: React.FC<CityDataCardProps> = ({
       </CardHeader>
       
       <CardContent className="pt-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h4 className="font-medium text-sm text-gray-500 mb-2">Waste Data</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm">Waste per capita:</span>
-                <span className="font-medium">{city.wasteGenerationPerCapita} kg/day</span>
+        <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500">Waste per capita</p>
+              <p className="font-medium">{city.wasteGenerationPerCapita} kg/day</p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500">Total waste</p>
+              <p className="font-medium">{city.totalWastePerDay.toLocaleString()} t/day</p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500">Energy potential</p>
+              <div className="font-medium flex items-center">
+                <ZapIcon className="h-4 w-4 text-amber-500 mr-1" />
+                {dailyEnergyMWh} MWh/day
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm">Total waste:</span>
-                <span className="font-medium">{city.totalWastePerDay.toLocaleString()} tons/day</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm">Energy potential:</span>
-                <span className="font-medium flex items-center">
-                  <ZapIcon className="h-4 w-4 text-w2w-amber-500 mr-1" />
-                  {dailyEnergyMWh} MWh/day
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm">Best technology:</span>
-                <span className="font-medium">{energyPotential.bestTechnology.name}</span>
-              </div>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs text-gray-500">Best technology</p>
+              <p className="font-medium truncate">{energyPotential.bestTechnology.name}</p>
             </div>
           </div>
           
           <div>
             <h4 className="font-medium text-sm text-gray-500 mb-2">Waste Composition</h4>
-            <WasteCompositionChart composition={compositionArray} className="h-32" />
+            <WasteCompositionChart composition={compositionArray} className="h-36" />
           </div>
         </div>
       </CardContent>
       
-      <CardFooter className="border-t bg-gray-50 flex justify-between py-3">
+      <CardFooter className="border-t bg-gray-50 flex justify-between items-center py-3">
         {showActions && (
           <Button 
             variant="outline" 
@@ -119,12 +125,22 @@ const CityDataCard: React.FC<CityDataCardProps> = ({
             onClick={handleViewDetails}
           >
             <File className="h-4 w-4 mr-2" />
-            View Details
+            Details
           </Button>
         )}
         
-        <div className="text-sm text-gray-500">
-          ROI: {energyPotential.paybackPeriodYears.toFixed(1)} years
+        <div className="flex items-center">
+          <div className="flex flex-col items-end">
+            <div className="flex items-center">
+              <Clock className="h-3.5 w-3.5 mr-1 text-gray-500" />
+              <span className={`text-sm font-medium ${roiClass}`}>
+                ROI: {energyPotential.paybackPeriodYears.toFixed(1)} years
+              </span>
+            </div>
+            <span className="text-xs text-gray-500">
+              ₹{(energyPotential.annualRevenue / 10000000).toFixed(1)} Cr/year
+            </span>
+          </div>
         </div>
       </CardFooter>
     </Card>
