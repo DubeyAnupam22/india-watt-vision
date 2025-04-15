@@ -103,7 +103,11 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ cities, selectedCityI
             </div>
             
             <div className="flex items-center space-x-2 pt-2">
-              <Checkbox id="customTitle" checked={useCustomTitle} onCheckedChange={setUseCustomTitle} />
+              <Checkbox 
+                id="customTitle" 
+                checked={useCustomTitle} 
+                onCheckedChange={(checked) => setUseCustomTitle(checked === true)}
+              />
               <label htmlFor="customTitle" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 Use custom report title
               </label>
@@ -130,7 +134,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ cities, selectedCityI
                   id="wasteData" 
                   checked={includeOptions.wasteData}
                   onCheckedChange={(checked) => 
-                    setIncludeOptions({...includeOptions, wasteData: !!checked})
+                    setIncludeOptions({...includeOptions, wasteData: checked === true})
                   }
                 />
                 <label htmlFor="wasteData" className="text-sm font-medium leading-none">
@@ -143,7 +147,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ cities, selectedCityI
                   id="energyCalculation" 
                   checked={includeOptions.energyCalculation}
                   onCheckedChange={(checked) => 
-                    setIncludeOptions({...includeOptions, energyCalculation: !!checked})
+                    setIncludeOptions({...includeOptions, energyCalculation: checked === true})
                   }
                 />
                 <label htmlFor="energyCalculation" className="text-sm font-medium leading-none">
@@ -156,7 +160,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ cities, selectedCityI
                   id="financialAnalysis" 
                   checked={includeOptions.financialAnalysis}
                   onCheckedChange={(checked) => 
-                    setIncludeOptions({...includeOptions, financialAnalysis: !!checked})
+                    setIncludeOptions({...includeOptions, financialAnalysis: checked === true})
                   }
                 />
                 <label htmlFor="financialAnalysis" className="text-sm font-medium leading-none">
@@ -169,7 +173,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ cities, selectedCityI
                   id="environmentalImpact" 
                   checked={includeOptions.environmentalImpact}
                   onCheckedChange={(checked) => 
-                    setIncludeOptions({...includeOptions, environmentalImpact: !!checked})
+                    setIncludeOptions({...includeOptions, environmentalImpact: checked === true})
                   }
                 />
                 <label htmlFor="environmentalImpact" className="text-sm font-medium leading-none">
@@ -182,7 +186,7 @@ const ReportGenerator: React.FC<ReportGeneratorProps> = ({ cities, selectedCityI
                   id="recommendations" 
                   checked={includeOptions.recommendations}
                   onCheckedChange={(checked) => 
-                    setIncludeOptions({...includeOptions, recommendations: !!checked})
+                    setIncludeOptions({...includeOptions, recommendations: checked === true})
                   }
                 />
                 <label htmlFor="recommendations" className="text-sm font-medium leading-none">
