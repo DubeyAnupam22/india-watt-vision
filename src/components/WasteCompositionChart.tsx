@@ -1,9 +1,9 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
-import { WasteComposition, wasteTypes } from "@/lib/calculation";
+import { WasteTypeComposition } from "@/lib/calculation";
 
 interface WasteCompositionChartProps {
-  composition: WasteComposition[];
+  composition: WasteTypeComposition[];
   className?: string;
 }
 
@@ -24,9 +24,8 @@ const WasteCompositionChart: React.FC<WasteCompositionChartProps> = ({
 }) => {
   // Transform composition data for the chart
   const chartData = composition.map((item) => {
-    const wasteType = wasteTypes.find((wt) => wt.id === item.wasteTypeId);
     return {
-      name: wasteType?.name || "Unknown",
+      name: item.wasteTypeId,
       value: item.percentage,
     };
   });

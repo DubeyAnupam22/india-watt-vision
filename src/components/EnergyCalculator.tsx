@@ -6,7 +6,14 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CityWasteData, WasteComposition, calculateEnergyPotential, conversionTechnologies, wasteTypes } from "@/lib/calculation";
+import { 
+  CityWasteData, 
+  WasteTypeComposition, 
+  calculateEnergyPotential, 
+  conversionTechnologies, 
+  wasteTypes,
+  convertCompositionToArray 
+} from "@/lib/calculation";
 import WasteCompositionChart from "./WasteCompositionChart";
 import { BarChart3, Calculator, Zap } from "lucide-react";
 
@@ -21,10 +28,14 @@ const EnergyCalculator: React.FC<EnergyCalculatorProps> = ({ cityData }) => {
     population: cityData?.population || 1000000,
     wasteGenerationPerCapita: cityData?.wasteGenerationPerCapita || 0.5,
     totalWastePerDay: cityData?.totalWastePerDay || 500,
-    composition: cityData?.composition || wasteTypes.map(type => ({
-      wasteTypeId: type.id,
-      percentage: type.defaultComposition,
-    })),
+    composition: cityData?.composition || {
+      organic: 55,
+      paper: 12,
+      plastic: 12,
+      glass: 4,
+      metal: 4,
+      other: 13
+    },
     year: new Date().getFullYear(),
   });
   
@@ -32,11 +43,18 @@ const EnergyCalculator: React.FC<EnergyCalculatorProps> = ({ cityData }) => {
     conversionTechnologies[0].id
   );
   
+  const [wasteComposition, setWasteComposition] = useState<WasteTypeComposition[]>(
+    cityData ? convertCompositionToArray(cityData) : wasteTypes.map(type => ({
+      wasteTypeId: type.id,
+      percentage: type.defaultComposition,
+    }))
+  );
+  
   const energyResult = calculateEnergyPotential(waste);
   
   const updateComposition = (id: string, percentage: number) => {
     // Ensure percentages remain valid
-    let newComposition = waste.composition.map(item => 
+    let newComposition = wasteComposition.map(item => 
       item.wasteTypeId === id 
         ? { ...item, percentage } 
         : item
@@ -63,9 +81,19 @@ const EnergyCalculator: React.FC<EnergyCalculatorProps> = ({ cityData }) => {
       }
     }
     
+    setWasteComposition(newComposition);
+    
+    // Update waste object
+    const updatedComposition = newComposition.reduce((obj, item) => {
+      return {
+        ...obj,
+        [item.wasteTypeId]: item.percentage
+      };
+    }, {}) as any;
+    
     setWaste({
       ...waste,
-      composition: newComposition,
+      composition: updatedComposition,
     });
   };
   
@@ -196,7 +224,7 @@ const EnergyCalculator: React.FC<EnergyCalculatorProps> = ({ cityData }) => {
                   <SelectContent>
                     {conversionTechnologies.map((tech) => (
                       <SelectItem key={tech.id} value={tech.id}>
-                        {tech.name} (Efficiency: {tech.efficiency * 100}%)
+                        {tech.name} (Efficiency: {(tech.efficiency * 100).toFixed(0)}%)
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -210,10 +238,10 @@ const EnergyCalculator: React.FC<EnergyCalculatorProps> = ({ cityData }) => {
             <div>
               <Label className="mb-3 block">Waste Composition (%)</Label>
               <div className="space-y-4">
-                <WasteCompositionChart composition={waste.composition} />
+                <WasteCompositionChart composition={wasteComposition} />
                 
                 <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
-                  {waste.composition.map((item) => {
+                  {wasteComposition.map((item) => {
                     const wasteType = wasteTypes.find(
                       (w) => w.id === item.wasteTypeId
                     );

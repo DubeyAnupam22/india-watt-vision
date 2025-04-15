@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
-import { CityWasteData, WasteComposition, wasteTypes, useWasteData } from "@/lib/calculation";
+import { CityWasteData, WasteTypeComposition, wasteTypes, useWasteData, convertCompositionToArray } from "@/lib/calculation";
 import { useAuth } from "@/lib/auth";
 import Navbar from "@/components/Navbar";
 import WasteCompositionChart from "@/components/WasteCompositionChart";
@@ -33,7 +33,7 @@ const DataUpload = () => {
     wasteGenerationPerCapita: number;
     totalWastePerDay: number;
     year: number;
-    composition: WasteComposition[];
+    composition: WasteTypeComposition[];
     latitude?: number;
     longitude?: number;
   }>({
@@ -66,8 +66,8 @@ const DataUpload = () => {
           population: cityData.population,
           wasteGenerationPerCapita: cityData.wasteGenerationPerCapita,
           totalWastePerDay: cityData.totalWastePerDay,
-          year: cityData.year,
-          composition: cityData.composition,
+          year: cityData.year || new Date().getFullYear(),
+          composition: convertCompositionToArray(cityData),
           latitude: cityData.latitude,
           longitude: cityData.longitude,
         });
@@ -208,6 +208,14 @@ const DataUpload = () => {
         throw new Error("Total waste must be greater than 0");
       }
       
+      // Convert composition array to object
+      const compositionObj = formState.composition.reduce((obj, item) => {
+        return {
+          ...obj,
+          [item.wasteTypeId]: item.percentage
+        };
+      }, {}) as any;
+      
       // Create city data object
       const cityData: CityWasteData = {
         id: isEditing ? editCityId! : `city-${Date.now()}`,
@@ -216,7 +224,7 @@ const DataUpload = () => {
         wasteGenerationPerCapita: formState.wasteGenerationPerCapita,
         totalWastePerDay: formState.totalWastePerDay,
         year: formState.year,
-        composition: formState.composition,
+        composition: compositionObj,
         latitude: formState.latitude,
         longitude: formState.longitude,
       };
