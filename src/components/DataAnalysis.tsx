@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LineChart, Line, CartesianGrid } from "recharts";
-import { CityWasteData, calculateEnergyPotential } from "@/lib/calculation";
+import { CityWasteData, calculateEnergyPotential, convertCompositionToArray } from "@/lib/calculation";
 import WasteCompositionChart from "./WasteCompositionChart";
 import { WasteDataTable } from "./WasteDataTable";
 import { ColumnDef } from "@tanstack/react-table";
@@ -309,7 +309,7 @@ const DataAnalysis: React.FC<DataAnalysisProps> = ({ cities }) => {
               {cities.map((city) => (
                 <div key={city.id} className="border rounded-lg p-4">
                   <h3 className="font-medium mb-2">{city.name}</h3>
-                  <WasteCompositionChart composition={city.composition} className="h-64" />
+                  <WasteCompositionChart composition={convertCompositionToArray(city)} className="h-64" />
                 </div>
               ))}
             </div>

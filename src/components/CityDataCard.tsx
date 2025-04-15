@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CityWasteData, calculateEnergyPotential } from "@/lib/calculation";
+import { CityWasteData, calculateEnergyPotential, convertCompositionToArray } from "@/lib/calculation";
 import { useNavigate } from "react-router-dom";
 import { File, Trash, Pencil, ZapIcon } from "lucide-react";
 import { useAuth } from "@/lib/auth";
@@ -38,6 +38,9 @@ const CityDataCard: React.FC<CityDataCardProps> = ({
   const handleViewDetails = () => {
     navigate(`/dashboard?city=${city.id}`);
   };
+
+  // Convert composition to array format for the chart
+  const compositionArray = convertCompositionToArray(city);
 
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
@@ -102,7 +105,7 @@ const CityDataCard: React.FC<CityDataCardProps> = ({
           
           <div>
             <h4 className="font-medium text-sm text-gray-500 mb-2">Waste Composition</h4>
-            <WasteCompositionChart composition={city.composition} className="h-32" />
+            <WasteCompositionChart composition={compositionArray} className="h-32" />
           </div>
         </div>
       </CardContent>
