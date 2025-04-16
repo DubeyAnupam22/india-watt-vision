@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -62,40 +61,6 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				},
-				// Custom colors for the app
-				'w2w-green': {
-					100: '#E8F5E9',
-					200: '#C8E6C9',
-					300: '#A5D6A7',
-					400: '#81C784',
-					500: '#4CAF50', // Main green
-					600: '#43A047',
-					700: '#388E3C',
-					800: '#2E7D32',
-					900: '#1B5E20',
-				},
-				'w2w-blue': {
-					100: '#E3F2FD',
-					200: '#BBDEFB',
-					300: '#90CAF9',
-					400: '#64B5F6',
-					500: '#2196F3', // Main blue
-					600: '#1E88E5',
-					700: '#1976D2',
-					800: '#1565C0',
-					900: '#0D47A1',
-				},
-				'w2w-amber': {
-					100: '#FFECB3',
-					200: '#FFE082',
-					300: '#FFD54F',
-					400: '#FFCA28',
-					500: '#FFC107', // Main amber
-					600: '#FFB300',
-					700: '#FFA000',
-					800: '#FF8F00',
-					900: '#FF6F00',
 				}
 			},
 			borderRadius: {
@@ -124,9 +89,6 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
-			},
-			backgroundImage: {
-				'gradient-energy': 'linear-gradient(135deg, #4CAF50 0%, #2196F3 100%)',
 			}
 		}
 	},
