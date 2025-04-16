@@ -1,12 +1,13 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InvestmentAnalysis from "@/components/InvestmentAnalysis";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/sonner";
+import { RefreshCw } from "lucide-react";
 
 const Index = () => {
-  // Sample city data for demonstration
+  const [loading, setLoading] = useState(false);
   const [selectedCity, setSelectedCity] = useState({
     name: "New Delhi",
     population: 21000000,
@@ -14,7 +15,7 @@ const Index = () => {
     energyProduction: 450, // kWh per ton
   });
 
-  // Additional sample cities
+  // Sample cities data for demonstration
   const sampleCities = [
     {
       name: "New Delhi",
@@ -33,12 +34,55 @@ const Index = () => {
       population: 12500000,
       wastePerCapita: 0.6,
       energyProduction: 480,
+    },
+    {
+      name: "Kolkata",
+      population: 14850000,
+      wastePerCapita: 0.55,
+      energyProduction: 420,
+    },
+    {
+      name: "Chennai",
+      population: 10600000,
+      wastePerCapita: 0.62,
+      energyProduction: 440,
     }
   ];
+
+  const fetchCityData = async (cityName) => {
+    setLoading(true);
+    try {
+      // This is a simulated API call - in a real app, you would fetch from an actual API
+      // Example API endpoint: https://api.api-ninjas.com/v1/city?name=${cityName}
+      
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Find the city in our sample data
+      const city = sampleCities.find(c => c.name === cityName);
+      
+      if (city) {
+        // In a real app, you would update with the fetched data
+        setSelectedCity(city);
+        toast.success(`Updated data for ${cityName}`);
+      } else {
+        toast.error(`Could not fetch data for ${cityName}`);
+      }
+    } catch (error) {
+      console.error("Error fetching city data:", error);
+      toast.error("Failed to fetch city data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCityChange = (city) => {
     setSelectedCity(city);
     toast.success(`Selected ${city.name} for analysis`);
+  };
+
+  const handleRefresh = () => {
+    fetchCityData(selectedCity.name);
   };
 
   return (
@@ -72,6 +116,15 @@ const Index = () => {
                     {city.name}
                   </Button>
                 ))}
+                <Button 
+                  className="w-full mt-4"
+                  variant="secondary"
+                  onClick={handleRefresh}
+                  disabled={loading}
+                >
+                  <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+                  Refresh Data
+                </Button>
               </CardContent>
             </Card>
           </div>
